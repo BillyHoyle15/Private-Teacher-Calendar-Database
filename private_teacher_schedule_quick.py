@@ -80,14 +80,30 @@ class Calendar:
         self.setup(self.year, self.month)
      
     def import_data(self):
-        c.execute('CREATE TABLE IF NOT EXISTS  DENEME  (Date TEXT, Name TEXT)') #SQL syntax
+        c.execute('CREATE TABLE IF NOT EXISTS  TRIAL  (Date TEXT, Name TEXT)') #SQL syntax
         
 #        date = datetime.date(int(year.get()),int(month.get()), int(day.get())) #Date in format from 'import datetime'
 #
-#        c.execute('INSERT INTO ' +comp.get()+ ' (Datestamp, MaxWeight, Reps) VALUES (?, ?, ?)',
-#                  (date, weight.get(), reps.get())) #Insert record into database.
+        c.execute('INSERT INTO DENEME (Date, Name) VALUES (?, ?)',
+                  (self.day_name, self.price.get())) #Insert record into database.
         con.commit()
         self.setup(self.year, self.month)
+        
+    def show_data(self):
+         c.execute('SELECT * FROM TRIAL') #now only selecting our beta database
+         
+         self.frame =tk.Frame(self.parent)
+         self.frame.grid(row=2, column=12, rowspan = 4)
+         
+         self.Lb = tk.Listbox(self.frame, height = 8, width = 12,font=("arial", 12)) 
+         self.Lb.pack()
+         
+         self.entries = c.fetchall() # Gets the data from the table
+         for row in self.entries:
+             self.Lb.insert(1,row) # Inserts record row by row in list box
+             
+         con.commit()
+         self.setup(self.year, self.month)
          
     def setup(self, y, m):
         left = tk.Button(self.parent, text='<', command=self.go_prev)
@@ -128,7 +144,7 @@ class Calendar:
         ok.grid(row=9, column=2, columnspan=3, pady=10)
         
         #first let's start with a button for importing into database
-        imp = tk.Button(self.parent, text="Import", command=self.import_data) #command will be added
+        imp = tk.Button(self.parent, text="Import", command=self.import_data)
         self.wid.append(imp)
         imp.grid(row=9, column=11, columnspan=3, pady=10)
         
@@ -138,6 +154,13 @@ class Calendar:
         self.price = tk.Entry(self.parent, textvariable=self.name)
         self.price.grid(row=8,column=12)        
          
+        #to see the database
+        imp = tk.Button(self.parent, text="Show_Data", command=self.show_data) #command will be added
+        self.wid.append(imp)
+        imp.grid(row=6, column=12, columnspan=3, pady=10)
+        
+        
+        
     def kill_and_save(self):
         self.parent.destroy()
         
